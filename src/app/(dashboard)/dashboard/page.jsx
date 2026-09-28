@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { AUTH_ROUTES } from "@/features/auth/constants/routes";
 import { useAuth } from "@/features/auth/hooks/use-auth";
+import { PROFILE_ROUTES } from "@/features/profile/constants/routes";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -36,10 +38,20 @@ export default function DashboardPage() {
             <div className="rounded-lg border bg-background p-4">
               <p className="text-sm text-muted-foreground">Signed in as</p>
               <p className="font-medium">{user?.email}</p>
+              {user?.profile?.headline ? (
+                <p className="mt-2 text-sm text-muted-foreground">
+                  {user.profile.headline}
+                </p>
+              ) : null}
             </div>
-            <Button variant="outline" onClick={handleLogout}>
-              Sign out
-            </Button>
+            <div className="flex flex-wrap gap-3">
+              <Button asChild>
+                <Link href={PROFILE_ROUTES.profile}>Edit profile</Link>
+              </Button>
+              <Button variant="outline" onClick={handleLogout}>
+                Sign out
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>

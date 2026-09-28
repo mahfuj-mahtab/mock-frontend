@@ -26,6 +26,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useRegisterMutation } from "@/features/auth/api/auth-api";
 import { AUTH_ROUTES } from "@/features/auth/constants/routes";
+import { PROFILE_ROUTES } from "@/features/profile/constants/routes";
 import { registerSchema } from "@/features/auth/validations/register-schema";
 
 export function RegisterForm() {
@@ -47,7 +48,7 @@ export function RegisterForm() {
     try {
       await registerUser(values).unwrap();
       toast.success("Registration successful");
-      router.push(AUTH_ROUTES.dashboard);
+      router.push(PROFILE_ROUTES.onboarding);
     } catch (error) {
       const apiError = error?.data;
 

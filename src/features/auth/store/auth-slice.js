@@ -66,6 +66,19 @@ const authSlice = createSlice({
       state.isAuthenticated = true;
       state.isInitialized = true;
     },
+    mergeUserProfile(state, action) {
+      if (!state.user) {
+        return;
+      }
+
+      state.user = {
+        ...state.user,
+        profile: {
+          ...state.user.profile,
+          ...action.payload,
+        },
+      };
+    },
     setInitialized(state, action) {
       state.isInitialized = action.payload;
     },
@@ -80,7 +93,7 @@ const authSlice = createSlice({
   },
 });
 
-export const { setCredentials, setUser, setInitialized, logout } =
+export const { setCredentials, setUser, mergeUserProfile, setInitialized, logout } =
   authSlice.actions;
 
 export default authSlice.reducer;
