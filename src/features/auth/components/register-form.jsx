@@ -25,8 +25,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useRegisterMutation } from "@/features/auth/api/auth-api";
+import { GitHubLoginButton } from "@/features/auth/components/github-login-button";
 import { AUTH_ROUTES } from "@/features/auth/constants/routes";
-import { PROFILE_ROUTES } from "@/features/profile/constants/routes";
+import { getPostAuthRoute } from "@/features/auth/utils/post-auth-redirect";
 import { registerSchema } from "@/features/auth/validations/register-schema";
 
 export function RegisterForm() {
@@ -46,9 +47,9 @@ export function RegisterForm() {
 
   async function onSubmit(values) {
     try {
-      await registerUser(values).unwrap();
+      const result = await registerUser(values).unwrap();
       toast.success("Registration successful");
-      router.push(PROFILE_ROUTES.onboarding);
+      router.push(getPostAuthRoute(result?.data?.user));
     } catch (error) {
       const apiError = error?.data;
 
@@ -69,7 +70,16 @@ export function RegisterForm() {
         <CardTitle>Create an account</CardTitle>
         <CardDescription>Enter your details to get started.</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-4">
+        <GitHubLoginButton />
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
+          </div>
+        </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">

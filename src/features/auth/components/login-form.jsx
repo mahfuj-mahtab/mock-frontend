@@ -2,7 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -27,10 +28,13 @@ import { Input } from "@/components/ui/input";
 import { useLoginMutation } from "@/features/auth/api/auth-api";
 import { AUTH_ROUTES } from "@/features/auth/constants/routes";
 import { loginSchema } from "@/features/auth/validations/login-schema";
+import { GitHubLoginButton } from "@/features/auth/components/github-login-button";
 
 export function LoginForm() {
   const router = useRouter();
   const [login, { isLoading }] = useLoginMutation();
+
+  const searchParams = useSearchParams();
 
   const form = useForm({
     resolver: zodResolver(loginSchema),
@@ -39,6 +43,13 @@ export function LoginForm() {
       password: "",
     },
   });
+
+  useEffect(() => {
+    if (searchParams.get("error") === "github_auth_failed") {
+      toast.error("GitHub sign-in failed. Please try again.");
+      router.replace(AUTH_ROUTES.login);
+    }
+  }, [router, searchParams]);
 
   async function onSubmit(values) {
     try {
@@ -65,7 +76,16 @@ export function LoginForm() {
         <CardTitle>Welcome back</CardTitle>
         <CardDescription>Sign in to your account to continue.</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-4">
+        <GitHubLoginButton />
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
+          </div>
+        </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
