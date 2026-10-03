@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 
 import { authApi } from "@/features/auth/api/auth-api";
 import authReducer from "@/features/auth/store/auth-slice";
+import { mockPrepApi } from "@/features/mock-prep/api/mock-prep-api";
 import { profileApi } from "@/features/profile/api/profile-api";
 
 export function makeStore() {
@@ -10,9 +11,14 @@ export function makeStore() {
       auth: authReducer,
       [authApi.reducerPath]: authApi.reducer,
       [profileApi.reducerPath]: profileApi.reducer,
+      [mockPrepApi.reducerPath]: mockPrepApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat(authApi.middleware, profileApi.middleware),
+      getDefaultMiddleware().concat(
+        authApi.middleware,
+        profileApi.middleware,
+        mockPrepApi.middleware
+      ),
   });
 }
 

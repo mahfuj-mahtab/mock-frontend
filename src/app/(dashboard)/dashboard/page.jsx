@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/card";
 import { AUTH_ROUTES } from "@/features/auth/constants/routes";
 import { useAuth } from "@/features/auth/hooks/use-auth";
+import { RecentSessions } from "@/features/mock-prep/components/recent-sessions";
+import { MOCK_PREP_ROUTES } from "@/features/mock-prep/constants/routes";
 import { PROFILE_ROUTES } from "@/features/profile/constants/routes";
 
 export default function DashboardPage() {
@@ -26,7 +28,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-muted/30 p-6">
-      <div className="mx-auto max-w-3xl">
+      <div className="mx-auto max-w-3xl space-y-6">
         <Card>
           <CardHeader>
             <CardTitle>Dashboard</CardTitle>
@@ -46,6 +48,9 @@ export default function DashboardPage() {
             </div>
             <div className="flex flex-wrap gap-3">
               <Button asChild>
+                <Link href={MOCK_PREP_ROUTES.setup}>Start mock interview</Link>
+              </Button>
+              <Button asChild variant="outline">
                 <Link href={PROFILE_ROUTES.profile}>Edit profile</Link>
               </Button>
               <Button variant="outline" onClick={handleLogout}>
@@ -54,6 +59,7 @@ export default function DashboardPage() {
             </div>
           </CardContent>
         </Card>
+        <RecentSessions />
       </div>
     </div>
   );
