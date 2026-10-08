@@ -1,5 +1,6 @@
 "use client";
 
+import { Statistic } from "antd";
 import { useEffect, useState } from "react";
 
 function formatTime(totalSeconds) {
@@ -36,12 +37,14 @@ export function SessionTimer({ startedAt, durationMinutes, onExpire }) {
   const isLow = remainingSeconds <= 5 * 60;
 
   return (
-    <div
-      className={`text-sm font-medium tabular-nums ${
-        isLow ? "text-destructive" : "text-muted-foreground"
-      }`}
-    >
-      {formatTime(remainingSeconds)} remaining
-    </div>
+    <Statistic
+      title="Time remaining"
+      value={formatTime(remainingSeconds)}
+      valueStyle={{
+        fontSize: 20,
+        color: isLow ? "#cf1322" : undefined,
+        fontVariantNumeric: "tabular-nums",
+      }}
+    />
   );
 }

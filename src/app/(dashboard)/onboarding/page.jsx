@@ -9,7 +9,7 @@ const { Title, Paragraph } = Typography;
 export default function OnboardingPage() {
   return (
     <App>
-      <div className="min-h-screen bg-muted/30 p-6">
+      <div className="app-surface-page p-6">
         <Row justify="center">
           <Col xs={24} lg={16} xl={12}>
             <div className="mb-6 space-y-2">

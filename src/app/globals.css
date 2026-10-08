@@ -1,50 +1,35 @@
 @import "tailwindcss";
 
 :root {
-  --background: 0 0% 100%;
-  --foreground: 0 0% 3.9%;
-  --card: 0 0% 100%;
-  --card-foreground: 0 0% 3.9%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 0 0% 3.9%;
-  --primary: 0 0% 9%;
-  --primary-foreground: 0 0% 98%;
-  --secondary: 0 0% 96.1%;
-  --secondary-foreground: 0 0% 9%;
-  --muted: 0 0% 96.1%;
-  --muted-foreground: 0 0% 45.1%;
-  --accent: 0 0% 96.1%;
-  --accent-foreground: 0 0% 9%;
-  --destructive: 0 84.2% 60.2%;
+  --background: 0 0% 4%;
+  --foreground: 0 0% 98%;
+  --card: 0 0% 8%;
+  --card-foreground: 0 0% 98%;
+  --popover: 0 0% 8%;
+  --popover-foreground: 0 0% 98%;
+  --primary: 0 0% 90%;
+  --primary-foreground: 0 0% 9%;
+  --secondary: 0 0% 14%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 0 0% 14%;
+  --muted-foreground: 0 0% 64%;
+  --accent: 0 0% 14%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 45%;
   --destructive-foreground: 0 0% 98%;
-  --border: 0 0% 89.8%;
-  --input: 0 0% 89.8%;
-  --ring: 0 0% 3.9%;
+  --border: 0 0% 18%;
+  --input: 0 0% 18%;
+  --ring: 0 0% 83%;
   --radius: 0.5rem;
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-  }
+  --dash-surface: 0 0% 8%;
+  --dash-surface-muted: 0 0% 6%;
+  --dash-border: 0 0% 18%;
+  --chat-interviewer-bg: 0 0% 12%;
+  --chat-user-bg: 0 0% 90%;
+  --chat-user-fg: 0 0% 9%;
+  --feedback-success-bg: 120 20% 12%;
+  --feedback-success-border: 120 25% 28%;
 }
 
 @theme inline {
@@ -78,7 +63,227 @@
   border-color: hsl(var(--border));
 }
 
+html {
+  color-scheme: dark;
+}
+
 body {
   background: hsl(var(--background));
   color: hsl(var(--foreground));
+}
+
+/* Dashboard shell */
+.dashboard-layout .dashboard-sider {
+  border-right: 1px solid hsl(var(--dash-border));
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: auto;
+}
+
+.dashboard-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 64px;
+  padding: 0 20px;
+  border-bottom: 1px solid hsl(var(--dash-border));
+  color: inherit;
+  text-decoration: none;
+}
+
+.dashboard-brand:hover {
+  color: inherit;
+}
+
+.dashboard-brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.dashboard-brand-text {
+  font-weight: 600;
+  font-size: 16px;
+  white-space: nowrap;
+}
+
+.dashboard-header {
+  background: hsl(var(--dash-surface)) !important;
+  padding: 0 24px !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid hsl(var(--dash-border));
+  height: 64px !important;
+  line-height: 1.2 !important;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.dashboard-header-main {
+  min-width: 0;
+}
+
+.dashboard-header-title {
+  margin: 0 !important;
+  line-height: 1.3 !important;
+  font-size: 18px !important;
+  color: hsl(var(--foreground)) !important;
+}
+
+.dashboard-breadcrumb {
+  margin-top: 2px;
+  font-size: 12px;
+}
+
+.dashboard-user-trigger {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid hsl(var(--dash-border));
+  border-radius: 999px;
+  background: hsl(var(--dash-surface-muted));
+  cursor: pointer;
+  padding: 4px 12px 4px 4px;
+  max-width: 280px;
+  color: inherit;
+}
+
+.dashboard-user-trigger:hover {
+  background: hsl(var(--secondary));
+}
+
+.dashboard-user-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  text-align: left;
+}
+
+.dashboard-user-name {
+  display: block;
+  font-size: 13px;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-user-email {
+  display: block;
+  font-size: 11px;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-content {
+  padding: 24px;
+  background: hsl(var(--background));
+  min-height: calc(100vh - 64px);
+}
+
+.session-transcript {
+  flex: 1;
+  min-height: 280px;
+  max-height: min(52vh, 520px);
+  overflow-y: auto;
+  padding: 4px 4px 8px;
+  margin-bottom: 16px;
+  border: 1px solid hsl(var(--dash-border));
+  border-radius: 12px;
+  background: hsl(var(--dash-surface-muted));
+}
+
+.session-sidebar-sticky {
+  position: sticky;
+  top: 0;
+}
+
+.chat-bubble-interviewer {
+  background: hsl(var(--chat-interviewer-bg));
+  color: hsl(var(--foreground));
+  border: 1px solid hsl(var(--dash-border));
+}
+
+.chat-bubble-user {
+  background: hsl(var(--chat-user-bg));
+  color: hsl(var(--chat-user-fg));
+}
+
+.chat-bubble-latest {
+  box-shadow: 0 0 0 2px hsl(var(--primary) / 0.35);
+}
+
+.chat-bubble-label-user {
+  color: hsl(var(--chat-user-fg) / 0.65) !important;
+}
+
+.chat-bubble-score-user {
+  color: hsl(var(--chat-user-fg) / 0.75);
+}
+
+.turn-feedback-banner {
+  margin-bottom: 16px;
+  padding: 10px 12px;
+  background: hsl(var(--feedback-success-bg));
+  border: 1px solid hsl(var(--feedback-success-border));
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.voice-response-panel {
+  background: hsl(var(--dash-surface)) !important;
+  border: 1px solid hsl(var(--dash-border)) !important;
+}
+
+.voice-captured-answer {
+  padding: 12px;
+  background: hsl(var(--dash-surface-muted));
+  border-radius: 8px;
+  border: 1px solid hsl(var(--dash-border));
+}
+
+.dashboard-profile-strip {
+  padding: 16px;
+  border-radius: 12px;
+  background: linear-gradient(
+    135deg,
+    hsl(var(--dash-surface)) 0%,
+    hsl(var(--dash-surface-muted)) 100%
+  );
+  border: 1px solid hsl(var(--dash-border));
+}
+
+.app-surface-page {
+  min-height: 100vh;
+  background: hsl(var(--background));
+}
+
+@media (max-width: 767px) {
+  .dashboard-user-meta {
+    display: none;
+  }
+
+  .dashboard-user-trigger {
+    padding: 4px;
+    border-radius: 50%;
+    max-width: none;
+  }
+
+  .dashboard-breadcrumb {
+    display: none;
+  }
 }
