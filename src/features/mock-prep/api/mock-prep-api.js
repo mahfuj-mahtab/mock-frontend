@@ -1,6 +1,7 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 
 import { baseQueryWithReauth } from "@/lib/api/base-query";
+import { unwrapApiData } from "@/lib/api/transform-response";
 
 export const mockPrepApi = createApi({
   reducerPath: "mockPrepApi",
@@ -9,24 +10,24 @@ export const mockPrepApi = createApi({
   endpoints: (builder) => ({
     getTracks: builder.query({
       query: () => "/mock-prep/tracks/",
-      transformResponse: (response) => response.data,
+      transformResponse: unwrapApiData,
     }),
     getTechnologies: builder.query({
       query: (trackId) => ({
         url: "/mock-prep/technologies/",
         params: trackId ? { track: trackId } : undefined,
       }),
-      transformResponse: (response) => response.data,
+      transformResponse: unwrapApiData,
     }),
     getSessions: builder.query({
       query: () => "/mock-prep/sessions/",
       providesTags: ["MockPrepSessions"],
-      transformResponse: (response) => response.data,
+      transformResponse: unwrapApiData,
     }),
     getSession: builder.query({
       query: (id) => `/mock-prep/sessions/${id}/`,
       providesTags: (_result, _error, id) => [{ type: "MockPrepSession", id }],
-      transformResponse: (response) => response.data,
+      transformResponse: unwrapApiData,
     }),
     createSession: builder.mutation({
       query: (body) => ({
@@ -35,7 +36,7 @@ export const mockPrepApi = createApi({
         body,
       }),
       invalidatesTags: ["MockPrepSessions"],
-      transformResponse: (response) => response.data,
+      transformResponse: unwrapApiData,
     }),
     startSession: builder.mutation({
       query: (id) => ({
@@ -46,7 +47,7 @@ export const mockPrepApi = createApi({
         "MockPrepSessions",
         { type: "MockPrepSession", id },
       ],
-      transformResponse: (response) => response.data,
+      transformResponse: unwrapApiData,
     }),
     submitTurn: builder.mutation({
       query: ({ sessionId, content }) => ({
@@ -58,7 +59,7 @@ export const mockPrepApi = createApi({
         "MockPrepSessions",
         { type: "MockPrepSession", id: sessionId },
       ],
-      transformResponse: (response) => response.data,
+      transformResponse: unwrapApiData,
     }),
     completeSession: builder.mutation({
       query: (id) => ({
@@ -69,7 +70,7 @@ export const mockPrepApi = createApi({
         "MockPrepSessions",
         { type: "MockPrepSession", id },
       ],
-      transformResponse: (response) => response.data,
+      transformResponse: unwrapApiData,
     }),
   }),
 });

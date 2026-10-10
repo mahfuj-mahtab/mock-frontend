@@ -5,4 +5,7 @@ export { ExperienceList } from "./components/experience-list";
 export { EducationList } from "./components/education-list";
 export { SkillsList } from "./components/skills-list";
 export { CvUpload } from "./components/cv-upload";
+export { ProfileReadinessCard } from "./components/profile-readiness-card";
+export { ProfilePageShell } from "./components/profile-page-shell";
 export { PROFILE_ROUTES } from "./constants/routes";
+export { getProfileCompleteness } from "./utils/profile-completeness";

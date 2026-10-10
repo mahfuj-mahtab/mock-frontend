@@ -101,7 +101,9 @@ export function ProfileForm() {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <div>
+              <p className="learner-form-section-title">Basics</p>
             <FormField
               control={form.control}
               name="headline"
@@ -166,6 +168,9 @@ export function ProfileForm() {
                 )}
               />
             </div>
+            </div>
+            <div>
+              <p className="learner-form-section-title">Contact</p>
             <FormField
               control={form.control}
               name="phone"
@@ -179,6 +184,9 @@ export function ProfileForm() {
                 </FormItem>
               )}
             />
+            </div>
+            <div>
+              <p className="learner-form-section-title">Links</p>
             <div className="grid gap-4 md:grid-cols-3">
               <FormField
                 control={form.control}
@@ -220,9 +228,12 @@ export function ProfileForm() {
                 )}
               />
             </div>
-            <Button type="submit" disabled={isSaving}>
-              {isSaving ? "Saving..." : "Save profile"}
-            </Button>
+            </div>
+            <div className="learner-form-sticky-footer">
+              <Button type="submit" disabled={isSaving}>
+                {isSaving ? "Saving..." : "Save profile"}
+              </Button>
+            </div>
           </form>
         </Form>
       </CardContent>

@@ -94,7 +94,7 @@ export function DashboardShell({ children }) {
             style={{ borderInlineEnd: 0, padding: "8px 0" }}
           />
         </Sider>
-        <Layout>
+        <Layout style={{ flex: 1, minWidth: 0 }}>
           <Header className="dashboard-header">
             <div className="dashboard-header-main">
               <Typography.Title level={4} className="dashboard-header-title">

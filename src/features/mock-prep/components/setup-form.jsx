@@ -1,30 +1,46 @@
 "use client";
 
 import { RocketOutlined } from "@ant-design/icons";
-import { Alert, Button, Card, Form, Select, Space, Steps, Tag, Typography } from "antd";
+import { Alert, Button, Card, Form, Grid, Select, Space, Steps, Tag, Typography } from "antd";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { useAuth } from "@/features/auth/hooks/use-auth";
 import {
+  mockPrepApi,
   useCreateSessionMutation,
   useGetTechnologiesQuery,
   useGetTracksQuery,
   useStartSessionMutation,
 } from "@/features/mock-prep/api/mock-prep-api";
 import { MOCK_PREP_ROUTES } from "@/features/mock-prep/constants/routes";
-import { ENGINEER_LEVELS } from "@/features/profile/constants/routes";
+import { ENGINEER_LEVELS, PROFILE_ROUTES } from "@/features/profile/constants/routes";
+import {
+  getApiErrorMessage,
+  isSessionAlreadyStartedError,
+} from "@/lib/api/transform-response";
+import { useAppDispatch } from "@/lib/store/hooks";
 
 const LEVEL_OPTIONS = ENGINEER_LEVELS.filter((level) => level.value);
 
+function formatLevelLabel(value) {
+  return LEVEL_OPTIONS.find((option) => option.value === value)?.label || value;
+}
+
 export function SetupForm() {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const { user } = useAuth();
+  const isSubmittingRef = useRef(false);
+  const screens = Grid.useBreakpoint();
   const { data: tracks = [], isLoading: tracksLoading } = useGetTracksQuery();
   const [trackId, setTrackId] = useState("");
-  const [level, setLevel] = useState(user?.profile?.level || "");
+  const [levelOverride, setLevelOverride] = useState(null);
   const [selectedTechIds, setSelectedTechIds] = useState([]);
+
+  const level = levelOverride ?? user?.profile?.level ?? "";
 
   const { data: technologies = [], isLoading: techLoading } =
     useGetTechnologiesQuery(trackId, { skip: !trackId });
@@ -32,15 +48,12 @@ export function SetupForm() {
   const [createSession, { isLoading: isCreating }] = useCreateSessionMutation();
   const [startSession, { isLoading: isStarting }] = useStartSessionMutation();
 
-  useEffect(() => {
-    if (user?.profile?.level && !level) {
-      setLevel(user.profile.level);
-    }
-  }, [user, level]);
+  const profileLevel = user?.profile?.level;
 
-  useEffect(() => {
+  function selectTrack(id) {
+    setTrackId(id);
     setSelectedTechIds([]);
-  }, [trackId]);
+  }
 
   const currentStep = useMemo(() => {
     if (!trackId) {
@@ -69,38 +82,82 @@ export function SetupForm() {
       return;
     }
 
+    if (isSubmittingRef.current) {
+      return;
+    }
+
+    isSubmittingRef.current = true;
+
     try {
-      const session = await createSession({
+      let session = await createSession({
         track_id: trackId,
         level,
         technology_ids: selectedTechIds,
       }).unwrap();
 
-      await startSession(session.id).unwrap();
-      router.push(MOCK_PREP_ROUTES.session(session.id));
+      const sessionId = session?.id;
+      if (!sessionId) {
+        toast.error("Could not create session. Please try again.");
+        return;
+      }
+
+      if (session.status === "setup") {
+        try {
+          session = await startSession(sessionId).unwrap();
+        } catch (startError) {
+          if (!isSessionAlreadyStartedError(startError)) {
+            throw startError;
+          }
+          const refetch = await dispatch(
+            mockPrepApi.endpoints.getSession.initiate(sessionId, {
+              forceRefetch: true,
+            })
+          );
+          if (refetch.data) {
+            session = refetch.data;
+          }
+        }
+      }
+
+      dispatch(
+        mockPrepApi.util.upsertQueryData("getSession", sessionId, session)
+      );
+      router.push(MOCK_PREP_ROUTES.session(sessionId));
     } catch (error) {
-      const message =
-        error?.data?.errors?.detail?.[0] ||
-        error?.data?.message ||
-        "Failed to start mock interview.";
-      toast.error(message);
+      toast.error(
+        getApiErrorMessage(error, "Failed to start mock interview.")
+      );
+    } finally {
+      isSubmittingRef.current = false;
     }
   }
 
   const isLoading = tracksLoading || isCreating || isStarting;
   const canStart = trackId && level && selectedTechIds.length > 0;
+  const showTrackTiles = screens.md;
 
   return (
     <Card
       bordered={false}
+      className="learner-surface-card"
       title="Configure your session"
       extra={
         <Typography.Text type="secondary">~40 min · 15–20 questions</Typography.Text>
       }
+      styles={{ body: { padding: 24 } }}
     >
+      {profileLevel ? (
+        <div className="learner-profile-level-strip">
+          Using your profile level: <strong>{formatLevelLabel(profileLevel)}</strong>.
+          {" "}
+          <Link href={PROFILE_ROUTES.profile}>Update in profile</Link>
+        </div>
+      ) : null}
+
       <Steps
         size="small"
         current={currentStep}
+        className="learner-setup-steps"
         style={{ marginBottom: 24 }}
         items={[
           { title: "Track" },
@@ -120,23 +177,47 @@ export function SetupForm() {
 
       <Form layout="vertical" onFinish={handleStart}>
         <Form.Item label="Interview track" required>
-          <Select
-            placeholder="Select track"
-            loading={tracksLoading}
-            value={trackId || undefined}
-            onChange={setTrackId}
-            options={tracks.map((track) => ({
-              value: track.id,
-              label: track.name,
-            }))}
-          />
+          {showTrackTiles ? (
+            <div
+              style={{
+                display: "grid",
+                gap: 10,
+                gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+              }}
+            >
+              {tracks.map((track) => (
+                <button
+                  key={track.id}
+                  type="button"
+                  className={`learner-track-tile${
+                    trackId === track.id ? " learner-track-tile--selected" : ""
+                  }`}
+                  onClick={() => selectTrack(track.id)}
+                  disabled={tracksLoading}
+                >
+                  <Typography.Text strong>{track.name}</Typography.Text>
+                </button>
+              ))}
+            </div>
+          ) : (
+            <Select
+              placeholder="Select track"
+              loading={tracksLoading}
+              value={trackId || undefined}
+              onChange={selectTrack}
+              options={tracks.map((track) => ({
+                value: track.id,
+                label: track.name,
+              }))}
+            />
+          )}
         </Form.Item>
 
         <Form.Item label="Your level" required>
           <Select
             placeholder="Select level"
             value={level || undefined}
-            onChange={setLevel}
+            onChange={setLevelOverride}
             options={LEVEL_OPTIONS.map((option) => ({
               value: option.value,
               label: option.label,

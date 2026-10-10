@@ -14,8 +14,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Mock App",
-  description: "SaaS application scaffold",
+  title: {
+    default: "Mock Prep",
+    template: "%s · Mock Prep",
+  },
+  description:
+    "AI-powered mock interviews for software engineers. Practice coding, system design, and behavioral rounds.",
 };
 
 export default function RootLayout({ children }) {

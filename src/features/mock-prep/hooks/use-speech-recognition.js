@@ -11,14 +11,13 @@ function getSpeechRecognition() {
 
 export function useSpeechRecognition() {
   const recognitionRef = useRef(null);
-  const [isSupported, setIsSupported] = useState(false);
+  const [isSupported] = useState(() => Boolean(getSpeechRecognition()));
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [interimTranscript, setInterimTranscript] = useState("");
 
   useEffect(() => {
     const SpeechRecognition = getSpeechRecognition();
-    setIsSupported(Boolean(SpeechRecognition));
 
     if (!SpeechRecognition) {
       return undefined;

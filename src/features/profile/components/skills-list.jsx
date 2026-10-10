@@ -1,9 +1,11 @@
 "use client";
 
+import { Sparkles } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+import { LearnerEmptyState } from "@/components/dashboard/learner-empty-state";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,6 +33,13 @@ import {
 } from "@/features/profile/api/profile-api";
 import { PROFICIENCY_LEVELS } from "@/features/profile/constants/routes";
 import { skillSchema } from "@/features/profile/validations/profile-schema";
+
+const PROFICIENCY_FILL = {
+  beginner: 25,
+  intermediate: 50,
+  advanced: 75,
+  expert: 100,
+};
 
 export function SkillsList() {
   const { data: skills = [], isLoading } = useGetSkillsQuery();
@@ -84,43 +93,62 @@ export function SkillsList() {
         {isLoading ? (
           <p className="text-sm text-muted-foreground">Loading skills...</p>
         ) : skills.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No skills added yet.</p>
+          <LearnerEmptyState
+            icon={<Sparkles size={22} />}
+            title="No skills yet"
+            description="Add technologies you use in interviews and on your CV."
+          />
         ) : (
-          <div className="flex flex-wrap gap-3">
-            {skills.map((item) => (
-              <div
-                key={item.id}
-                className="flex items-center gap-2 rounded-lg border bg-background px-3 py-2"
-              >
-                <Badge variant="secondary">{item.skill.name}</Badge>
-                <Select
-                  value={item.proficiency}
-                  onChange={(event) =>
-                    handleProficiencyChange(item.id, event.target.value)
-                  }
-                  className="h-8 w-auto min-w-[140px]"
-                >
-                  {PROFICIENCY_LEVELS.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </Select>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleDelete(item.id)}
-                >
-                  Remove
-                </Button>
-              </div>
-            ))}
+          <div className="grid gap-3 sm:grid-cols-2">
+            {skills.map((item) => {
+              const fill = PROFICIENCY_FILL[item.proficiency] ?? 50;
+              const label =
+                PROFICIENCY_LEVELS.find((option) => option.value === item.proficiency)
+                  ?.label ?? item.proficiency;
+
+              return (
+                <div key={item.id} className="learner-skill-chip">
+                  <div className="flex items-center justify-between gap-2">
+                    <Badge variant="secondary">{item.skill.name}</Badge>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 px-2"
+                      onClick={() => handleDelete(item.id)}
+                    >
+                      Remove
+                    </Button>
+                  </div>
+                  <div className="learner-skill-chip-bar">
+                    <div
+                      className="learner-skill-chip-bar-fill"
+                      style={{ width: `${fill}%` }}
+                    />
+                  </div>
+                  <Select
+                    value={item.proficiency}
+                    onChange={(event) =>
+                      handleProficiencyChange(item.id, event.target.value)
+                    }
+                    className="h-8 w-full"
+                    aria-label={`Proficiency for ${item.skill.name}`}
+                  >
+                    {PROFICIENCY_LEVELS.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </Select>
+                  <span className="text-xs text-muted-foreground">{label}</span>
+                </div>
+              );
+            })}
           </div>
         )}
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 rounded-lg border p-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 rounded-lg border p-4 bg-muted/20">
             <p className="text-sm font-medium">Add skill</p>
             <div className="grid gap-4 md:grid-cols-[1fr_180px_auto]">
               <FormField
