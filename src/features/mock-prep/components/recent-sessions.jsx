@@ -31,16 +31,12 @@ export function RecentSessions() {
   const recent = sessions.slice(0, 5);
 
   return (
-    <Card bordered={false} className="learner-surface-card">
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginBottom: 16,
-          padding: "16px 16px 0",
-        }}
-      >
+    <Card
+      bordered={false}
+      className="learner-surface-card"
+      styles={{ body: { padding: "0 0 8px" } }}
+    >
+      <div className="learner-recent-head">
         <Typography.Title level={5} style={{ margin: 0 }}>
           Recent mock interviews
         </Typography.Title>
@@ -50,7 +46,7 @@ export function RecentSessions() {
           </Button>
         </Link>
       </div>
-      <div style={{ padding: "0 8px 8px" }}>
+      <div>
         <List
           loading={isLoading}
           locale={{ emptyText: " " }}

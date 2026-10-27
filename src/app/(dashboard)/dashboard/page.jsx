@@ -2,11 +2,10 @@
 
 import {
   PlayCircleOutlined,
-  ProfileOutlined,
   ThunderboltOutlined,
   TrophyOutlined,
 } from "@ant-design/icons";
-import { Avatar, Button, Col, Row, Space, Typography } from "antd";
+import { Button, Col, Row, Typography } from "antd";
 import Link from "next/link";
 import { useMemo } from "react";
 
@@ -22,22 +21,10 @@ import {
   useGetProfileQuery,
   useGetSkillsQuery,
 } from "@/features/profile/api/profile-api";
-import {
-  PROFILE_ROUTES,
-  ProfileReadinessCard,
-} from "@/features/profile";
+import { PROFILE_ROUTES } from "@/features/profile";
 import { getProfileCompleteness } from "@/features/profile/utils/profile-completeness";
 
-const { Paragraph, Text, Title } = Typography;
-
-function getInitials(user) {
-  const first = user?.first_name?.[0] || "";
-  const last = user?.last_name?.[0] || "";
-  if (first || last) {
-    return `${first}${last}`.toUpperCase();
-  }
-  return user?.email?.[0]?.toUpperCase() || "?";
-}
+const { Text, Title } = Typography;
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -67,62 +54,26 @@ export default function DashboardPage() {
 
   return (
     <PageContainer>
-      <Space direction="vertical" size="large" style={{ width: "100%" }}>
-        <div className="learner-page-hero">
-          <Row gutter={[24, 24]} align="middle">
-            <Col xs={24} lg={16}>
-              <Space align="start" size="middle" style={{ marginBottom: 16 }}>
-                <Avatar
-                  size={56}
-                  src={user?.profile?.avatar || profile?.avatar || undefined}
-                  style={{ background: "hsl(var(--primary))", color: "hsl(var(--primary-foreground))" }}
-                >
-                  {getInitials(user)}
-                </Avatar>
-                <div>
-                  <Title level={3} style={{ marginTop: 0, marginBottom: 4 }}>
-                    Welcome back, {displayName}
-                  </Title>
-                  {user?.profile?.headline || profile?.headline ? (
-                    <Text type="secondary">
-                      {user?.profile?.headline || profile?.headline}
-                    </Text>
-                  ) : (
-                    <Text type="secondary">
-                      Practice technical interviews with an AI interviewer.
-                    </Text>
-                  )}
-                </div>
-              </Space>
-              <Paragraph type="secondary" style={{ marginBottom: 16, maxWidth: 520 }}>
-                Get instant feedback, build confidence, and show up ready for the real
-                loop.
-              </Paragraph>
-              <Space wrap>
-                <Link href={MOCK_PREP_ROUTES.setup}>
-                  <Button type="primary" size="large" icon={<PlayCircleOutlined />}>
-                    Start mock interview
-                  </Button>
-                </Link>
-                {percent < 100 ? (
-                  <Link href={PROFILE_ROUTES.profile}>
-                    <Button size="large" icon={<ProfileOutlined />}>
-                      Complete profile ({percent}%)
-                    </Button>
-                  </Link>
-                ) : (
-                  <Link href={PROFILE_ROUTES.profile}>
-                    <Button size="large" icon={<ProfileOutlined />}>
-                      Edit profile
-                    </Button>
-                  </Link>
-                )}
-              </Space>
-            </Col>
-            <Col xs={24} lg={8}>
-              <ProfileReadinessCard compact />
-            </Col>
-          </Row>
+      <div className="learner-home">
+        <div className="learner-home-top">
+          <div>
+            <Title level={3} className="learner-home-title">
+              Welcome back, {displayName}
+            </Title>
+            {percent < 100 ? (
+              <p className="learner-home-note">
+                <Text type="secondary">
+                  Profile is {percent}% complete.{" "}
+                  <Link href={PROFILE_ROUTES.profile}>Finish it</Link>
+                </Text>
+              </p>
+            ) : null}
+          </div>
+          <Link href={MOCK_PREP_ROUTES.setup}>
+            <Button type="primary" size="large" icon={<PlayCircleOutlined />}>
+              Start mock interview
+            </Button>
+          </Link>
         </div>
 
         <Row gutter={[16, 16]}>
@@ -150,7 +101,7 @@ export default function DashboardPage() {
         </Row>
 
         <RecentSessions />
-      </Space>
+      </div>
     </PageContainer>
   );
 }

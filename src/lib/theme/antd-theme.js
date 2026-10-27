@@ -22,7 +22,7 @@ export const antdTheme = {
       itemBorderRadius: 8,
       itemMarginInline: 8,
       itemHeight: 44,
-      darkItemBg: "#0a0a0a",
+      darkItemBg: "transparent",
     },
     Card: {
       headerFontSize: 16,
@@ -33,7 +33,7 @@ export const antdTheme = {
       primaryColor: "#0a0a0a",
     },
     Layout: {
-      siderBg: "#0a0a0a",
+      siderBg: "#141414",
       headerBg: "#141414",
       bodyBg: "#0a0a0a",
       triggerBg: "#141414",

@@ -1,9 +1,9 @@
 import { LandingPage } from "@/features/landing";
 
 export const metadata = {
-  title: "Mock Prep — AI coding interview practice",
+  title: "Mock Prep",
   description:
-    "Practice technical interviews with an AI interviewer. Choose your stack, answer out loud, and get feedback before the real loop.",
+    "Practice the interview out loud before you sit the real one. Pick a track, talk through the questions, and read what to fix.",
 };
 
 export default function HomePage() {

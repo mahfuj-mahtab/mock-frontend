@@ -1,52 +1,50 @@
 export const LANDING_COPY = {
   productName: "Mock Prep",
   hero: {
-    badge: "AI interviewer · Voice · System design",
-    headline: "Practice coding interviews out loud.",
+    badge: "Voice or typing · Your stack · A written summary",
+    headline: "Practice the interview out loud before you sit the real one.",
     subheadline:
-      "Run realistic mock interviews with an AI interviewer, answer by voice or text, and get feedback before the real loop.",
+      "Pick a track, talk through the questions, and read what you should fix before the actual interview.",
   },
   features: {
-    title: "Built for engineering interviews",
-    subtitle: "Everything you need to rehearse technical, behavioral, and system design rounds.",
+    title: "What you can do here",
+    subtitle: "The same rehearsal you would do with a friend, without waiting on their calendar.",
     items: [
       {
-        title: "Pick your track & stack",
+        title: "Choose the interview",
         description:
-          "Choose interview tracks, engineer level, and technologies that match the roles you are targeting.",
+          "Set the track, how senior you are, and the stack the job actually uses.",
       },
       {
-        title: "Live AI mock sessions",
-        description:
-          "Talk through problems naturally with an AI interviewer that adapts follow-ups to your answers.",
+        title: "Answer out loud",
+        description: "Talk or type. The follow-ups come from what you just said.",
       },
       {
-        title: "History & summaries",
-        description:
-          "Review past sessions, track progress, and revisit feedback when you prep for the next round.",
+        title: "Look back later",
+        description: "Each session stays in your history with a summary you can reread.",
       },
     ],
   },
   howItWorks: {
-    title: "How it works",
-    subtitle: "Three steps from signup to your first mock interview.",
+    title: "How a session goes",
+    subtitle: "Sign up, set a few details, then start.",
     steps: [
       {
-        title: "Set up your profile",
-        description: "Add experience, skills, and level so sessions match your background.",
+        title: "Fill in your background",
+        description: "Experience, skills, and level, so the questions are not generic.",
       },
       {
-        title: "Configure a session",
-        description: "Select track, seniority, and tech stack for a tailored question mix.",
+        title: "Set up the session",
+        description: "Track, seniority, and technologies. That is the whole form.",
       },
       {
-        title: "Interview & improve",
-        description: "Complete the mock, read the summary, and iterate until you are confident.",
+        title: "Do the interview",
+        description: "Finish it, read the notes, and run another one when you want.",
       },
     ],
   },
   cta: {
-    title: "Ready for your next mock?",
-    subtitle: "Create a free account and start practicing in minutes.",
+    title: "Want to try a round?",
+    subtitle: "Make an account and start whenever you have half an hour.",
   },
 };

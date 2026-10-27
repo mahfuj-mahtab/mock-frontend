@@ -82,17 +82,20 @@ export function DashboardShell({ children }) {
           width={248}
           collapsedWidth={72}
         >
-          <Link href={AUTH_ROUTES.dashboard} className="dashboard-brand">
-            <span className="dashboard-brand-mark">MP</span>
-            {!collapsed ? <span className="dashboard-brand-text">Mock Prep</span> : null}
-          </Link>
-          <Menu
-            mode="inline"
-            selectedKeys={[selectedKey]}
-            items={menuItems}
-            onClick={({ key }) => router.push(key)}
-            style={{ borderInlineEnd: 0, padding: "8px 0" }}
-          />
+          <div className="dashboard-sider-inner">
+            <Link href={AUTH_ROUTES.dashboard} className="dashboard-brand">
+              <span className="dashboard-brand-mark">MP</span>
+              {!collapsed ? <span className="dashboard-brand-text">Mock Prep</span> : null}
+            </Link>
+            <Menu
+              className="dashboard-menu"
+              mode="inline"
+              theme="dark"
+              selectedKeys={[selectedKey]}
+              items={menuItems}
+              onClick={({ key }) => router.push(key)}
+            />
+          </div>
         </Sider>
         <Layout style={{ flex: 1, minWidth: 0 }}>
           <Header className="dashboard-header">
