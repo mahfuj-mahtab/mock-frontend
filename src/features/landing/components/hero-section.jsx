@@ -69,7 +69,7 @@ export function HeroSection() {
               {"\n"}
               What happens when Redis is unavailable?
               {"\n\n"}
-              <span className="landing-t-dim">✓ session active · question 3/18</span>
+              <span className="landing-t-dim">✓ session active · question 3/5</span>
             </code>
           </pre>
         </div>

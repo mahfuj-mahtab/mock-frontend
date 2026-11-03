@@ -6,7 +6,7 @@ import { unwrapApiData } from "@/lib/api/transform-response";
 export const mockPrepApi = createApi({
   reducerPath: "mockPrepApi",
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["MockPrepSessions", "MockPrepSession"],
+  tagTypes: ["MockPrepSessions", "MockPrepSession", "MockPrepQuota"],
   endpoints: (builder) => ({
     getTracks: builder.query({
       query: () => "/mock-prep/tracks/",
@@ -29,13 +29,18 @@ export const mockPrepApi = createApi({
       providesTags: (_result, _error, id) => [{ type: "MockPrepSession", id }],
       transformResponse: unwrapApiData,
     }),
+    getQuota: builder.query({
+      query: () => "/mock-prep/sessions/quota/",
+      providesTags: ["MockPrepQuota"],
+      transformResponse: unwrapApiData,
+    }),
     createSession: builder.mutation({
       query: (body) => ({
         url: "/mock-prep/sessions/",
         method: "POST",
         body,
       }),
-      invalidatesTags: ["MockPrepSessions"],
+      invalidatesTags: ["MockPrepSessions", "MockPrepQuota"],
       transformResponse: unwrapApiData,
     }),
     startSession: builder.mutation({
@@ -45,6 +50,7 @@ export const mockPrepApi = createApi({
       }),
       invalidatesTags: (_result, _error, id) => [
         "MockPrepSessions",
+        "MockPrepQuota",
         { type: "MockPrepSession", id },
       ],
       transformResponse: unwrapApiData,
@@ -80,6 +86,7 @@ export const {
   useGetTechnologiesQuery,
   useGetSessionsQuery,
   useGetSessionQuery,
+  useGetQuotaQuery,
   useCreateSessionMutation,
   useStartSessionMutation,
   useSubmitTurnMutation,

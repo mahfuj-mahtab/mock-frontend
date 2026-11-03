@@ -123,6 +123,7 @@ export function LiveSessionRoom({ sessionId }) {
   const [typedAnswer, setTypedAnswer] = useState("");
   const [showTextFallback, setShowTextFallback] = useState(false);
   const [lastTurnFeedback, setLastTurnFeedback] = useState(null);
+  const [hasPlayedQuestion, setHasPlayedQuestion] = useState(false);
 
   const { data: session, isLoading, refetch } = useGetSessionQuery(sessionId);
   const [submitTurn, { isLoading: isSubmitting }] = useSubmitTurnMutation();
@@ -160,14 +161,6 @@ export function LiveSessionRoom({ sessionId }) {
   useEffect(() => {
     transcriptEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [turns.length, displayTranscript, lastTurnFeedback]);
-
-  useEffect(() => {
-    if (!latestMessage || hasSpokenRef.current) {
-      return;
-    }
-    speak(latestMessage);
-    hasSpokenRef.current = true;
-  }, [latestMessage, speak]);
 
   useEffect(() => {
     if (session?.status === "completed") {
@@ -211,6 +204,7 @@ export function LiveSessionRoom({ sessionId }) {
       if (result.interviewer_message) {
         speak(result.interviewer_message);
         hasSpokenRef.current = true;
+        setHasPlayedQuestion(true);
       }
 
       if (result.is_complete) {
@@ -319,9 +313,20 @@ export function LiveSessionRoom({ sessionId }) {
             bordered={false}
             title="Conversation"
             extra={
-              <Text type="secondary" style={{ fontSize: 12 }}>
-                Scroll to review earlier turns
-              </Text>
+              latestMessage ? (
+                <Button
+                  type={hasPlayedQuestion ? "link" : "primary"}
+                  size="small"
+                  onClick={() => {
+                    speak(latestMessage);
+                    hasSpokenRef.current = true;
+                    setHasPlayedQuestion(true);
+                  }}
+                  disabled={isSpeaking}
+                >
+                  {hasPlayedQuestion ? "Replay question" : "Play question"}
+                </Button>
+              ) : null
             }
           >
             <div className="session-transcript">

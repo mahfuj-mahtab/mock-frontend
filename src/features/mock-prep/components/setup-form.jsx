@@ -11,6 +11,7 @@ import { useAuth } from "@/features/auth/hooks/use-auth";
 import {
   mockPrepApi,
   useCreateSessionMutation,
+  useGetQuotaQuery,
   useGetTechnologiesQuery,
   useGetTracksQuery,
   useStartSessionMutation,
@@ -36,6 +37,7 @@ export function SetupForm() {
   const isSubmittingRef = useRef(false);
   const screens = Grid.useBreakpoint();
   const { data: tracks = [], isLoading: tracksLoading } = useGetTracksQuery();
+  const { data: quota } = useGetQuotaQuery();
   const [trackId, setTrackId] = useState("");
   const [levelOverride, setLevelOverride] = useState(null);
   const [selectedTechIds, setSelectedTechIds] = useState([]);
@@ -133,8 +135,16 @@ export function SetupForm() {
   }
 
   const isLoading = tracksLoading || isCreating || isStarting;
-  const canStart = trackId && level && selectedTechIds.length > 0;
+  const quotaReached = quota?.remaining === 0;
+  const canStart = trackId && level && selectedTechIds.length > 0 && !quotaReached;
   const showTrackTiles = screens.md;
+  const sessionShape = quota
+    ? `${quota.duration_minutes} min · ${quota.question_count} questions`
+    : "15 min · 5 questions";
+  const quotaLabel =
+    quota?.limit == null
+      ? null
+      : `${quota.remaining} of ${quota.limit} ${quota.plan_name} mocks left this month`;
 
   return (
     <Card
@@ -142,7 +152,7 @@ export function SetupForm() {
       className="learner-surface-card"
       title="Configure your session"
       extra={
-        <Typography.Text type="secondary">~40 min · 15–20 questions</Typography.Text>
+        <Typography.Text type="secondary">{sessionShape}</Typography.Text>
       }
       styles={{ body: { padding: 24 } }}
     >
@@ -167,13 +177,27 @@ export function SetupForm() {
         ]}
       />
 
-      <Alert
-        type="info"
-        showIcon
-        message="Verbal mock interview"
-        description="An AI interviewer will ask questions from the bank. Use your microphone or type answers. You'll get scores and feedback at the end."
-        style={{ marginBottom: 24 }}
-      />
+      {quotaLabel ? (
+        <Alert
+          type={quotaReached ? "warning" : "info"}
+          showIcon
+          message={quotaLabel}
+          description={
+            quotaReached
+              ? "This plan's monthly mock interviews are used up. An admin can raise the limit on the subscription plan."
+              : "An AI interviewer asks from the question bank. Use your microphone or type answers."
+          }
+          style={{ marginBottom: 24 }}
+        />
+      ) : (
+        <Alert
+          type="info"
+          showIcon
+          message="Verbal mock interview"
+          description="An AI interviewer will ask questions from the bank. Use your microphone or type answers. You'll get scores and feedback at the end."
+          style={{ marginBottom: 24 }}
+        />
+      )}
 
       <Form layout="vertical" onFinish={handleStart}>
         <Form.Item label="Interview track" required>
